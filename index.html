@@ -5,44 +5,118 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Test.prank-as.site</title>
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: system-ui, sans-serif;
-      background: linear-gradient(135deg, #ffffff, #e8f2ff);
-      margin: 0;
-      padding: 0;
-      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #d8eaff, #f7faff);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: hidden;
     }
-    h1 { margin: 20px 0; color: #222; }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 15px;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      cursor: pointer;
+
+    h1 {
+      margin: 30px 0 10px;
+      font-size: 28px;
+      color: #003366;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.1);
       transition: 0.3s;
     }
-    .card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
-    .card img { width: 80px; height: 80px; }
-    .card p { margin-top: 10px; font-weight: bold; }
-    .btn {
-      background: #0078ff; color: white; border: none;
-      padding: 10px 20px; border-radius: 10px;
-      cursor: pointer; transition: 0.3s; font-size: 16px; margin: 5px;
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 20px;
+      width: 90%;
+      max-width: 900px;
+      margin-top: 20px;
+      animation: fadeIn 0.5s ease-in-out;
     }
-    .btn:hover { background: #005ed9; }
-    #options, #classes, #download { margin-top: 30px; display: none; }
+
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.3s ease;
+      transform: scale(0.95);
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .card img {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 10px;
+      transition: 0.3s;
+    }
+
+    .card:hover img { transform: rotate(-5deg) scale(1.1); }
+
+    .card p {
+      font-weight: 600;
+      color: #004080;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #007bff, #0056d9);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 16px;
+      margin: 8px;
+      box-shadow: 0 5px 12px rgba(0, 91, 255, 0.3);
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, #0068d9, #004fc2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0, 91, 255, 0.4);
+    }
+
+    #options, #classes, #download {
+      display: none;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
     #backBtn {
-      margin-top: 30px; padding: 8px 18px;
-      border: none; border-radius: 8px; background: #ccc;
-      cursor: pointer; display: none;
+      margin-top: 25px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      background: #ccc;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+      display: none;
+    }
+
+    #backBtn:hover {
+      background: #bbb;
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 20px;
+      font-size: 14px;
+      color: #666;
+      text-align: center;
     }
   </style>
 </head>
@@ -52,7 +126,9 @@
   <div id="options"></div>
   <div id="classes"></div>
   <div id="download"></div>
-  <button id="backBtn">Назад</button>
+  <button id="backBtn">⬅ Назад</button>
+
+  <footer>© 2025 Test.prank-as.site | by Jafar 😎</footer>
 
   <script>
     const mainSubjects = [
@@ -86,7 +162,7 @@
     let selectedType = null;
     let selectedClass = null;
 
-    // 📘 Asosiy fanlarni chiqarish
+    // 🔹 Fanlarni chiqarish
     function renderSubjects(list) {
       subjectsDiv.innerHTML = "";
       list.forEach(sub => {
@@ -97,7 +173,6 @@
         subjectsDiv.appendChild(div);
       });
 
-      // 🔹 “Другие предметы...”
       if (list === mainSubjects) {
         const other = document.createElement("div");
         other.className = "card";
@@ -109,21 +184,20 @@
 
     renderSubjects(mainSubjects);
 
-    // 📗 СОР / СОЧ tanlash
+    // 🔹 СОР / СОЧ tanlash
     function showOptions(subject) {
       selectedSubject = subject;
       subjectsDiv.style.display = "none";
       optionsDiv.style.display = "block";
       backBtn.style.display = "inline-block";
       title.textContent = subject.name;
-
       optionsDiv.innerHTML = `
-        <button class="btn" onclick="selectType('СОР')">СОР</button>
-        <button class="btn" onclick="selectType('СОЧ')">СОЧ</button>
+        <button class="btn" onclick="selectType('СОР')">📘 СОР</button>
+        <button class="btn" onclick="selectType('СОЧ')">📗 СОЧ</button>
       `;
     }
 
-    // 📙 Sinfni tanlash
+    // 🔹 Sinfni tanlash
     function selectType(type) {
       selectedType = type;
       optionsDiv.style.display = "none";
@@ -139,19 +213,16 @@
       }
     }
 
-    // 📒 Fayl yuklab olish (yo‘lni o‘zing yozasan kodda!)
+    // 🔹 Yuklab olish tugmasi (yo‘lni o‘zing yozasan)
     function selectClass(num) {
       selectedClass = num;
       classesDiv.style.display = "none";
       title.textContent = `${selectedSubject.name} — ${selectedType} — ${num} класс`;
-
       downloadDiv.style.display = "block";
 
-      // 🔻 bu joyda yo‘lni o‘zing yozasan
-      const filePath = `/tests/${selectedSubject.id}/${num}/${selectedType}_1.docx`;
-
+      const filePath = `/tests/${selectedSubject.id}/${num}/${selectedType}_1.docx`; // o‘zing o‘zgartirasan
       downloadDiv.innerHTML = `
-        <button class="btn" onclick="window.location.href='${filePath}'">Скачать для печати</button>
+        <button class="btn" onclick="window.location.href='${filePath}'">⬇ Скачать для печати</button>
       `;
     }
 
