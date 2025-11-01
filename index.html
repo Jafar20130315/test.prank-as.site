@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: system-ui, sans-serif;
-      background: linear-gradient(135deg, #ffffff, #e8f0ff);
+      background: linear-gradient(135deg, #ffffff, #e6f2ff);
       margin: 0;
       padding: 0;
       text-align: center;
@@ -15,7 +15,7 @@
 
     h1 {
       margin: 20px 0;
-      color: #333;
+      color: #222;
     }
 
     .grid {
@@ -51,7 +51,7 @@
       font-weight: bold;
     }
 
-    .class-btn {
+    .btn {
       background: #0078ff;
       color: white;
       border: none;
@@ -60,13 +60,14 @@
       cursor: pointer;
       transition: 0.3s;
       font-size: 16px;
+      margin: 5px;
     }
 
-    .class-btn:hover {
+    .btn:hover {
       background: #005ed9;
     }
 
-    #classes {
+    #options, #classes, #download {
       margin-top: 30px;
       display: none;
     }
@@ -80,39 +81,49 @@
       cursor: pointer;
       display: none;
     }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 60%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+      font-size: 15px;
+    }
   </style>
 </head>
 <body>
   <h1 id="title">Выберите предмет</h1>
   <div id="subjects" class="grid"></div>
+  <div id="options"></div>
   <div id="classes"></div>
+  <div id="download"></div>
   <button id="backBtn">Назад</button>
 
   <script>
     const subjects = [
       { name: "Математика", id: "matematika" },
       { name: "Русский язык", id: "russkiy_yazyk" },
-      { name: "Литература", id: "literatura" },
-      { name: "Узбекский язык", id: "uzbek_yazyk" },
       { name: "Физика", id: "fizika" },
       { name: "Химия", id: "himiya" },
       { name: "Биология", id: "biologiya" },
-      { name: "География", id: "geografiya" },
       { name: "История", id: "istoriya" },
       { name: "Информатика", id: "informatika" },
       { name: "Английский язык", id: "angliyskiy_yazyk" },
-      { name: "Музыка", id: "muzyka" },
-      { name: "Изобразительное искусство", id: "iskusstvo" },
-      { name: "Технология", id: "tehnologiya" },
-      { name: "Физическая культура", id: "fizra" },
-      { name: "Другие предметы...", id: "drugie" }
     ];
 
     const subjectsDiv = document.getElementById("subjects");
+    const optionsDiv = document.getElementById("options");
     const classesDiv = document.getElementById("classes");
+    const downloadDiv = document.getElementById("download");
     const title = document.getElementById("title");
     const backBtn = document.getElementById("backBtn");
 
+    let selectedSubject = null;
+    let selectedType = null;
+    let selectedClass = null;
+
+    // 📘 1. Fanni chiqarish
     subjects.forEach(sub => {
       const div = document.createElement("div");
       div.className = "card";
@@ -120,35 +131,71 @@
         <img src="icons/book.png" alt="${sub.name}">
         <p>${sub.name}</p>
       `;
-      div.onclick = () => showClasses(sub);
+      div.onclick = () => showOptions(sub);
       subjectsDiv.appendChild(div);
     });
 
-    function showClasses(subject) {
+    // 📗 2. СОР / СОЧ tanlash
+    function showOptions(subject) {
+      selectedSubject = subject;
       subjectsDiv.style.display = "none";
-      classesDiv.style.display = "block";
+      optionsDiv.style.display = "block";
       backBtn.style.display = "inline-block";
       title.textContent = subject.name;
+
+      optionsDiv.innerHTML = `
+        <button class="btn" onclick="selectType('СОР')">СОР</button>
+        <button class="btn" onclick="selectType('СОЧ')">СОЧ</button>
+      `;
+    }
+
+    // 📙 3. Sinfni tanlash
+    function selectType(type) {
+      selectedType = type;
+      optionsDiv.style.display = "none";
+      classesDiv.style.display = "block";
+      title.textContent = `${selectedSubject.name} — ${type}`;
 
       classesDiv.innerHTML = "";
       for (let i = 5; i <= 11; i++) {
         const btn = document.createElement("button");
         btn.textContent = `${i} класс`;
-        btn.className = "class-btn";
-        btn.onclick = () => {
-          const path = `/tests/${subject.id}/${i}/СОР_1.docx`;
-          const a = document.createElement("a");
-          a.href = path;
-          a.download = '';
-          a.click();
-        };
+        btn.className = "btn";
+        btn.onclick = () => selectClass(i);
         classesDiv.appendChild(btn);
       }
     }
 
+    // 📒 4. "Скачать для печати" bosqichi
+    function selectClass(num) {
+      selectedClass = num;
+      classesDiv.style.display = "none";
+      title.textContent = `${selectedSubject.name} — ${selectedType} — ${num} класс`;
+
+      downloadDiv.style.display = "block";
+      downloadDiv.innerHTML = `
+        <input id="pathInput" type="text" placeholder="Напишите путь к файлу (например: /tests/matematika/5/sor1.docx)">
+        <br>
+        <button class="btn" onclick="downloadFile()">Скачать для печати</button>
+      `;
+    }
+
+    // 📥 5. Yuklab olish
+    function downloadFile() {
+      const path = document.getElementById("pathInput").value.trim();
+      if (!path) return alert("Введите путь к файлу!");
+      const a = document.createElement("a");
+      a.href = path;
+      a.download = '';
+      a.click();
+    }
+
+    // 🔙 Orqaga qaytish
     backBtn.onclick = () => {
       subjectsDiv.style.display = "grid";
+      optionsDiv.style.display = "none";
       classesDiv.style.display = "none";
+      downloadDiv.style.display = "none";
       backBtn.style.display = "none";
       title.textContent = "Выберите предмет";
     };
