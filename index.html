@@ -3,13 +3,156 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Выбор класса</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Test.prank-as.site</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: linear-gradient(135deg, #ffffff, #e8f0ff);
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 20px 0;
+      color: #333;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .card img {
+      width: 80px;
+      height: 80px;
+    }
+
+    .card p {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .class-btn {
+      background: #0078ff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 16px;
+    }
+
+    .class-btn:hover {
+      background: #005ed9;
+    }
+
+    #classes {
+      margin-top: 30px;
+      display: none;
+    }
+
+    #backBtn {
+      margin-top: 30px;
+      padding: 8px 18px;
+      border: none;
+      border-radius: 8px;
+      background: #ccc;
+      cursor: pointer;
+      display: none;
+    }
+  </style>
 </head>
 <body>
-  <h1 id="subjectName"></h1>
-  <div id="classes" class="grid"></div>
+  <h1 id="title">Выберите предмет</h1>
+  <div id="subjects" class="grid"></div>
+  <div id="classes"></div>
+  <button id="backBtn">Назад</button>
 
-  <script src="skript.js"></script>
+  <script>
+    const subjects = [
+      { name: "Математика", id: "matematika" },
+      { name: "Русский язык", id: "russkiy_yazyk" },
+      { name: "Литература", id: "literatura" },
+      { name: "Узбекский язык", id: "uzbek_yazyk" },
+      { name: "Физика", id: "fizika" },
+      { name: "Химия", id: "himiya" },
+      { name: "Биология", id: "biologiya" },
+      { name: "География", id: "geografiya" },
+      { name: "История", id: "istoriya" },
+      { name: "Информатика", id: "informatika" },
+      { name: "Английский язык", id: "angliyskiy_yazyk" },
+      { name: "Музыка", id: "muzyka" },
+      { name: "Изобразительное искусство", id: "iskusstvo" },
+      { name: "Технология", id: "tehnologiya" },
+      { name: "Физическая культура", id: "fizra" },
+      { name: "Другие предметы...", id: "drugie" }
+    ];
+
+    const subjectsDiv = document.getElementById("subjects");
+    const classesDiv = document.getElementById("classes");
+    const title = document.getElementById("title");
+    const backBtn = document.getElementById("backBtn");
+
+    subjects.forEach(sub => {
+      const div = document.createElement("div");
+      div.className = "card";
+      div.innerHTML = `
+        <img src="icons/book.png" alt="${sub.name}">
+        <p>${sub.name}</p>
+      `;
+      div.onclick = () => showClasses(sub);
+      subjectsDiv.appendChild(div);
+    });
+
+    function showClasses(subject) {
+      subjectsDiv.style.display = "none";
+      classesDiv.style.display = "block";
+      backBtn.style.display = "inline-block";
+      title.textContent = subject.name;
+
+      classesDiv.innerHTML = "";
+      for (let i = 5; i <= 11; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = `${i} класс`;
+        btn.className = "class-btn";
+        btn.onclick = () => {
+          const path = `/tests/${subject.id}/${i}/СОР_1.docx`;
+          const a = document.createElement("a");
+          a.href = path;
+          a.download = '';
+          a.click();
+        };
+        classesDiv.appendChild(btn);
+      }
+    }
+
+    backBtn.onclick = () => {
+      subjectsDiv.style.display = "grid";
+      classesDiv.style.display = "none";
+      backBtn.style.display = "none";
+      title.textContent = "Выберите предмет";
+    };
+  </script>
 </body>
 </html>
+
