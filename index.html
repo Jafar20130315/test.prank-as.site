@@ -7,17 +7,12 @@
   <style>
     body {
       font-family: system-ui, sans-serif;
-      background: linear-gradient(135deg, #ffffff, #e6f2ff);
+      background: linear-gradient(135deg, #ffffff, #e8f2ff);
       margin: 0;
       padding: 0;
       text-align: center;
     }
-
-    h1 {
-      margin: 20px 0;
-      color: #222;
-    }
-
+    h1 { margin: 20px 0; color: #222; }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -26,7 +21,6 @@
       margin: 0 auto;
       padding: 20px;
     }
-
     .card {
       background: #fff;
       border-radius: 12px;
@@ -35,60 +29,20 @@
       cursor: pointer;
       transition: 0.3s;
     }
-
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    }
-
-    .card img {
-      width: 80px;
-      height: 80px;
-    }
-
-    .card p {
-      margin-top: 10px;
-      font-weight: bold;
-    }
-
+    .card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+    .card img { width: 80px; height: 80px; }
+    .card p { margin-top: 10px; font-weight: bold; }
     .btn {
-      background: #0078ff;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: 0.3s;
-      font-size: 16px;
-      margin: 5px;
+      background: #0078ff; color: white; border: none;
+      padding: 10px 20px; border-radius: 10px;
+      cursor: pointer; transition: 0.3s; font-size: 16px; margin: 5px;
     }
-
-    .btn:hover {
-      background: #005ed9;
-    }
-
-    #options, #classes, #download {
-      margin-top: 30px;
-      display: none;
-    }
-
+    .btn:hover { background: #005ed9; }
+    #options, #classes, #download { margin-top: 30px; display: none; }
     #backBtn {
-      margin-top: 30px;
-      padding: 8px 18px;
-      border: none;
-      border-radius: 8px;
-      background: #ccc;
-      cursor: pointer;
-      display: none;
-    }
-
-    input[type="text"] {
-      padding: 10px;
-      width: 60%;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      margin-top: 10px;
-      font-size: 15px;
+      margin-top: 30px; padding: 8px 18px;
+      border: none; border-radius: 8px; background: #ccc;
+      cursor: pointer; display: none;
     }
   </style>
 </head>
@@ -101,7 +55,7 @@
   <button id="backBtn">Назад</button>
 
   <script>
-    const subjects = [
+    const mainSubjects = [
       { name: "Математика", id: "matematika" },
       { name: "Русский язык", id: "russkiy_yazyk" },
       { name: "Физика", id: "fizika" },
@@ -110,6 +64,15 @@
       { name: "История", id: "istoriya" },
       { name: "Информатика", id: "informatika" },
       { name: "Английский язык", id: "angliyskiy_yazyk" },
+    ];
+
+    const otherSubjects = [
+      { name: "Литература", id: "literatura" },
+      { name: "Узбекский язык", id: "uzbek" },
+      { name: "Музыка", id: "muzyka" },
+      { name: "Изобразительное искусство", id: "izobr" },
+      { name: "Технология", id: "texnologiya" },
+      { name: "Физическая культура", id: "fizkultura" },
     ];
 
     const subjectsDiv = document.getElementById("subjects");
@@ -123,19 +86,30 @@
     let selectedType = null;
     let selectedClass = null;
 
-    // 📘 1. Fanni chiqarish
-    subjects.forEach(sub => {
-      const div = document.createElement("div");
-      div.className = "card";
-      div.innerHTML = `
-        <img src="icons/book.png" alt="${sub.name}">
-        <p>${sub.name}</p>
-      `;
-      div.onclick = () => showOptions(sub);
-      subjectsDiv.appendChild(div);
-    });
+    // 📘 Asosiy fanlarni chiqarish
+    function renderSubjects(list) {
+      subjectsDiv.innerHTML = "";
+      list.forEach(sub => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `<img src="icons/book.png"><p>${sub.name}</p>`;
+        div.onclick = () => showOptions(sub);
+        subjectsDiv.appendChild(div);
+      });
 
-    // 📗 2. СОР / СОЧ tanlash
+      // 🔹 “Другие предметы...”
+      if (list === mainSubjects) {
+        const other = document.createElement("div");
+        other.className = "card";
+        other.innerHTML = `<img src="icons/book.png"><p>Другие предметы...</p>`;
+        other.onclick = () => renderSubjects(otherSubjects);
+        subjectsDiv.appendChild(other);
+      }
+    }
+
+    renderSubjects(mainSubjects);
+
+    // 📗 СОР / СОЧ tanlash
     function showOptions(subject) {
       selectedSubject = subject;
       subjectsDiv.style.display = "none";
@@ -149,13 +123,12 @@
       `;
     }
 
-    // 📙 3. Sinfni tanlash
+    // 📙 Sinfni tanlash
     function selectType(type) {
       selectedType = type;
       optionsDiv.style.display = "none";
       classesDiv.style.display = "block";
       title.textContent = `${selectedSubject.name} — ${type}`;
-
       classesDiv.innerHTML = "";
       for (let i = 5; i <= 11; i++) {
         const btn = document.createElement("button");
@@ -166,40 +139,32 @@
       }
     }
 
-    // 📒 4. "Скачать для печати" bosqichi
+    // 📒 Fayl yuklab olish (yo‘lni o‘zing yozasan kodda!)
     function selectClass(num) {
       selectedClass = num;
       classesDiv.style.display = "none";
       title.textContent = `${selectedSubject.name} — ${selectedType} — ${num} класс`;
 
       downloadDiv.style.display = "block";
-      downloadDiv.innerHTML = `
-        <input id="pathInput" type="text" placeholder="Напишите путь к файлу (например: /tests/matematika/5/sor1.docx)">
-        <br>
-        <button class="btn" onclick="downloadFile()">Скачать для печати</button>
-      `;
-    }
 
-    // 📥 5. Yuklab olish
-    function downloadFile() {
-      const path = document.getElementById("pathInput").value.trim();
-      if (!path) return alert("Введите путь к файлу!");
-      const a = document.createElement("a");
-      a.href = path;
-      a.download = '';
-      a.click();
+      // 🔻 bu joyda yo‘lni o‘zing yozasan
+      const filePath = `/tests/${selectedSubject.id}/${num}/${selectedType}_1.docx`;
+
+      downloadDiv.innerHTML = `
+        <button class="btn" onclick="window.location.href='${filePath}'">Скачать для печати</button>
+      `;
     }
 
     // 🔙 Orqaga qaytish
     backBtn.onclick = () => {
-      subjectsDiv.style.display = "grid";
+      title.textContent = "Выберите предмет";
       optionsDiv.style.display = "none";
       classesDiv.style.display = "none";
       downloadDiv.style.display = "none";
       backBtn.style.display = "none";
-      title.textContent = "Выберите предмет";
+      subjectsDiv.style.display = "grid";
+      renderSubjects(mainSubjects);
     };
   </script>
 </body>
 </html>
-
